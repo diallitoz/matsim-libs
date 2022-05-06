@@ -21,6 +21,7 @@ package org.matsim.contrib.taxi.optimizer;
 
 import java.net.URL;
 
+import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.Fleet;
 import org.matsim.contrib.dvrp.schedule.ScheduleTimingUpdater;
@@ -58,10 +59,11 @@ public class DefaultTaxiOptimizerProvider implements Provider<TaxiOptimizer> {
 	private final TaxiScheduler scheduler;
 	private final URL context;
 	private final ScheduleTimingUpdater scheduleTimingUpdater;
+	private final Scenario scenario;
 
 	public DefaultTaxiOptimizerProvider(EventsManager eventsManager, TaxiConfigGroup taxiCfg, Fleet fleet,
-			Network network, MobsimTimer timer, TravelTime travelTime, TravelDisutility travelDisutility,
-			TaxiScheduler scheduler, ScheduleTimingUpdater scheduleTimingUpdater, URL context) {
+										Network network, MobsimTimer timer, TravelTime travelTime, TravelDisutility travelDisutility,
+										TaxiScheduler scheduler, ScheduleTimingUpdater scheduleTimingUpdater, URL context, Scenario scenario) {
 		this.eventsManager = eventsManager;
 		this.taxiCfg = taxiCfg;
 		this.fleet = fleet;
@@ -72,6 +74,7 @@ public class DefaultTaxiOptimizerProvider implements Provider<TaxiOptimizer> {
 		this.scheduler = scheduler;
 		this.scheduleTimingUpdater = scheduleTimingUpdater;
 		this.context = context;
+		this.scenario = scenario;
 	}
 
 	@Override
@@ -86,7 +89,7 @@ public class DefaultTaxiOptimizerProvider implements Provider<TaxiOptimizer> {
 
 			case FifoTaxiOptimizerParams.SET_NAME: {
 				var requestInserter = new FifoRequestInserter(network, fleet, timer, travelTime, travelDisutility,
-						scheduler);
+						scheduler, scenario);
 				return new DefaultTaxiOptimizer(eventsManager, taxiCfg, fleet, scheduler, scheduleTimingUpdater,
 						requestInserter);
 			}

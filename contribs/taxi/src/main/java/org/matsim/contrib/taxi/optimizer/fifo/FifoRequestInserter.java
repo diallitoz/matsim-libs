@@ -20,6 +20,7 @@ package org.matsim.contrib.taxi.optimizer.fifo;
 
 import java.util.Collection;
 
+import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.Fleet;
 import org.matsim.contrib.taxi.optimizer.BestDispatchFinder;
@@ -37,17 +38,19 @@ public class FifoRequestInserter implements UnplannedRequestInserter {
 	private final Fleet fleet;
 	private final TaxiScheduler scheduler;
 	private final BestDispatchFinder dispatchFinder;
+	private  final Scenario scenario;
 
 	public FifoRequestInserter(Network network, Fleet fleet, MobsimTimer timer, TravelTime travelTime,
-			TravelDisutility travelDisutility, TaxiScheduler scheduler) {
+							   TravelDisutility travelDisutility, TaxiScheduler scheduler, Scenario scenario) {
 		this.fleet = fleet;
 		this.scheduler = scheduler;
 		dispatchFinder = new BestDispatchFinder(scheduler.getScheduleInquiry(), network, timer, travelTime,
 				travelDisutility);
+		this.scenario = scenario;
 	}
 
 	@Override
 	public void scheduleUnplannedRequests(Collection<TaxiRequest> unplannedRequests) {
-		new FifoSchedulingProblem(fleet, scheduler, dispatchFinder).scheduleUnplannedRequests(unplannedRequests);
+		new FifoSchedulingProblem(fleet, scheduler, dispatchFinder, scenario).scheduleUnplannedRequests(unplannedRequests);
 	}
 }

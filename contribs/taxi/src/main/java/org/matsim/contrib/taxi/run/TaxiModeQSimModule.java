@@ -22,6 +22,7 @@ package org.matsim.contrib.taxi.run;
 
 import java.util.function.Supplier;
 
+import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.network.Network;
 import org.matsim.contrib.dvrp.fleet.Fleet;
 import org.matsim.contrib.dvrp.optimizer.VrpOptimizer;
@@ -77,6 +78,9 @@ public class TaxiModeQSimModule extends AbstractDvrpModeQSimModule {
 		addModalComponent(TaxiOptimizer.class,
 				new ModalProviders.AbstractProvider<>(taxiCfg.getMode(), DvrpModes::mode) {
 					@Inject
+					Scenario scenario;
+
+					@Inject
 					private MobsimTimer timer;
 
 					@Inject
@@ -93,7 +97,7 @@ public class TaxiModeQSimModule extends AbstractDvrpModeQSimModule {
 
 						ScheduleTimingUpdater scheduleTimingUpdater = getModalInstance(ScheduleTimingUpdater.class);
 						return new DefaultTaxiOptimizerProvider(events, taxiCfg, fleet, network, timer, travelTime,
-								travelDisutility, taxiScheduler, scheduleTimingUpdater, getConfig().getContext()).get();
+								travelDisutility, taxiScheduler, scheduleTimingUpdater, getConfig().getContext(), scenario).get();
 					}
 				});
 
